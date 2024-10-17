@@ -44,7 +44,10 @@ export async function upsertRewords() {
           japan_date: formatToDateTime(row["일섭 날짜"]),
           korea_date: formatToDateTime(row["한섭 날짜"]),
           name: row["이름"],
-          free_jewel: row["무료쥬얼"] !== "" ? parseInt(row["무료쥬얼"]) : null,
+          free_jewel:
+            row["무료쥬얼"] !== ""
+              ? Number(row["무료쥬얼"].replace(/,/g, ""))
+              : null,
           character_ticket:
             row["캐릭티켓"] !== "" ? parseInt(row["캐릭티켓"]) : null,
           support_ticket:
@@ -56,7 +59,10 @@ export async function upsertRewords() {
           japan_date: formatToDateTime(row["일섭 날짜"]),
           korea_date: formatToDateTime(row["한섭 날짜"]),
           name: row["이름"],
-          free_jewel: row["무료쥬얼"] !== "" ? parseInt(row["무료쥬얼"]) : null,
+          free_jewel:
+            row["무료쥬얼"] !== ""
+              ? Number(row["무료쥬얼"].replace(/,/g, ""))
+              : null,
           character_ticket:
             row["캐릭티켓"] !== "" ? parseInt(row["캐릭티켓"]) : null,
           support_ticket:
