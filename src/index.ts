@@ -1,21 +1,5 @@
-/* import { serve } from "@hono/node-server";
+import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-
-const app = new Hono();
-
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
-
-const port = 3000;
-console.log(`Server is running on port ${port}`);
-
-serve({
-  fetch: app.fetch,
-  port,
-});
- */
-
 import { upsertPickupData, upsertRewords } from "../lib/auto";
 import db from "../lib/db";
 import { sendPickupDataToDiscord } from "../lib/discord";
@@ -26,8 +10,35 @@ import {
 } from "../lib/utile";
 import { Field } from "../types/interface";
 import schedule from "node-schedule";
+import { ok } from "assert";
 
-const jab = schedule.scheduleJob({ hour: 16, minute: 9 }, async () => {
+const app = new Hono();
+
+app.get("/get/main-pickup", async (c) => {
+  const mainPickups = await db.mainPickup.findMany();
+  return c.json({
+    ok: true,
+    results: mainPickups,
+  });
+});
+
+app.get("/get/rewords", async (c) => {
+  const rewords = await db.reward.findMany();
+  return c.json({
+    ok: true,
+    results: rewords,
+  });
+});
+
+const port = 3000;
+console.log(`Server is running on port ${port}`);
+
+serve({
+  fetch: app.fetch,
+  port,
+});
+
+const jab = schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
   await upsertPickupData();
   await upsertRewords();
 
@@ -91,7 +102,6 @@ const jab = schedule.scheduleJob({ hour: 16, minute: 9 }, async () => {
     freeJewel += jewelPack * betweenDays;
     freeJewel += mondays * teamRace;
     freeJewel += monthGap * circle;
-    console.log(mainPickup.description, freeJewel);
     fields.push({
       name: mainPickup.description,
       value: `쥬얼: ${freeJewel},무지개 조각: ${rainbowPiece},캐릭터 티켓: ${characterTicket},서포트 티켓: ${supportTicket}`,
