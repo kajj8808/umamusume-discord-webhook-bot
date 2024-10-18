@@ -10,7 +10,6 @@ import {
 } from "../lib/utile";
 import { Field } from "../types/interface";
 import schedule from "node-schedule";
-import { ok } from "assert";
 
 const app = new Hono();
 
@@ -30,7 +29,7 @@ app.get("/get/rewords", async (c) => {
   });
 });
 
-const port = 3000;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 console.log(`Server is running on port ${port}`);
 
 serve({

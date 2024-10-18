@@ -26,3 +26,4 @@ npx prisma generate
 
 - DATABASE_URL (ex. "file:./database.db")
 - WEBHOOK_URL (discord webhook url)
+- PORT (server port)
