@@ -16,36 +16,18 @@ serve({
 });
  */
 
-function getDaysBetween(date1: Date, date2: Date) {
-  // getTime()을 사용해 두 날짜의 밀리초 차이를 계산
-  let timeDiff: number = Math.abs(date1.getTime() - date2.getTime());
-  // 밀리초를 일로 변환 (1일 = 24시간 * 60분 * 60초 * 1000밀리초)
-  let dayDiff: number = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  return dayDiff;
-}
-
-function getMondaysBetween(date1: Date, date2: Date) {
-  const startDate = date1;
-  const endDate = date2;
-  startDate.setDate(startDate.getDate() + 1);
-  let mondayCount = 0;
-  while (true) {
-    if (startDate >= endDate) {
-      break;
-    }
-
-    if (startDate.getDay() === 1) {
-      mondayCount++;
-    }
-    startDate.setDate(startDate.getDate() + 1);
-  }
-  return mondayCount;
-}
-
 import { upsertPickupData, upsertRewords } from "../lib/auto";
 import db from "../lib/db";
+import { sendPickupDataToDiscord } from "../lib/discord";
+import {
+  formatToKorDate,
+  getDaysBetween,
+  getMondaysBetween,
+} from "../lib/utile";
+import { Field } from "../types/interface";
+import schedule from "node-schedule";
 
-(async () => {
+const jab = schedule.scheduleJob({ hour: 16, minute: 9 }, async () => {
   await upsertPickupData();
   await upsertRewords();
 
@@ -62,14 +44,17 @@ import db from "../lib/db";
     },
   });
 
-  let characterTicket = 0;
-  let supportTicket = 0;
-  let rainbowPiece = 0;
+  const fields: Field[] = [];
 
   for (let mainPickup of mainPickups) {
     let freeJewel = 0;
+    let characterTicket = 0;
+    let supportTicket = 0;
+    let rainbowPiece = 0;
+
     const nowDate = new Date();
     const koreaDate = new Date(mainPickup.korea_date);
+
     const rewords = await db.reward.findMany({
       where: {
         korea_date: {
@@ -81,6 +66,15 @@ import db from "../lib/db";
     for (let reword of rewords) {
       if (reword.free_jewel) {
         freeJewel += reword.free_jewel;
+      }
+      if (reword.rainbow_piece) {
+        rainbowPiece += reword.rainbow_piece;
+      }
+      if (reword.support_ticket) {
+        supportTicket += reword.support_ticket;
+      }
+      if (reword.character_ticket) {
+        characterTicket += reword.character_ticket;
       }
     }
     const monthGap = Math.floor(koreaDate.getMonth() - nowDate.getMonth());
@@ -97,8 +91,14 @@ import db from "../lib/db";
     freeJewel += jewelPack * betweenDays;
     freeJewel += mondays * teamRace;
     freeJewel += monthGap * circle;
-
-    // console.log(betweenDays);
     console.log(mainPickup.description, freeJewel);
+    fields.push({
+      name: mainPickup.description,
+      value: `쥬얼: ${freeJewel},무지개 조각: ${rainbowPiece},캐릭터 티켓: ${characterTicket},서포트 티켓: ${supportTicket}`,
+    });
   }
-})();
+  sendPickupDataToDiscord({
+    title: `사료 계산기 ${formatToKorDate(new Date())}`,
+    fields: fields,
+  });
+});

@@ -13,3 +13,8 @@ export interface RewardCSV {
   서폿티켓: string;
   "무지개 조각": string;
 }
+
+export interface Field {
+  name: string;
+  value: string;
+}
