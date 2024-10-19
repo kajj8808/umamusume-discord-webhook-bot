@@ -102,7 +102,7 @@ const jab = schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
     freeJewel += mondays * teamRace;
     freeJewel += monthGap * circle;
     fields.push({
-      name: mainPickup.description,
+      name: `${mainPickup.description} D-${betweenDays}`,
       value: `쥬얼: ${freeJewel},무지개 조각: ${rainbowPiece},캐릭터 티켓: ${characterTicket},서포트 티켓: ${supportTicket}`,
     });
   }
