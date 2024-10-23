@@ -37,7 +37,7 @@ serve({
   port,
 });
 
-const jab = schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
+schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
   await upsertPickupData();
   await upsertRewords();
 
