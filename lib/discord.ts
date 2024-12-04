@@ -34,7 +34,6 @@ export function sendPostToDiscord(post: Post) {
   const embed = new EmbedBuilder();
   embed.setTitle(post.title);
   embed.setImage(post.image);
-  embed.setDescription(post.description);
   embed.setColor("Green");
   embed.setTimestamp();
   webhookClient.send({ embeds: [embed] });
