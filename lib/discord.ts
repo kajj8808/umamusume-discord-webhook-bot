@@ -1,5 +1,6 @@
 import { EmbedBuilder, WebhookClient } from "discord.js";
 import { Field } from "../types/interface";
+import { Post } from "@prisma/client";
 
 const webhookClient = new WebhookClient({
   url: process.env.WEBHOOK_URL!,
@@ -24,6 +25,16 @@ export function sendPickupDataToDiscord(pickupData: PickupData) {
   embed.setDescription(
     "```[ 서클보상 S / 팀레5유지 / 챔미A결3위 / 월정액 / 말오스 플레3 ]```"
   );
+  embed.setColor("Green");
+  embed.setTimestamp();
+  webhookClient.send({ embeds: [embed] });
+}
+
+export function sendPostToDiscord(post: Post) {
+  const embed = new EmbedBuilder();
+  embed.setTitle(post.title);
+  embed.setImage(post.image);
+  embed.setDescription(post.description);
   embed.setColor("Green");
   embed.setTimestamp();
   webhookClient.send({ embeds: [embed] });

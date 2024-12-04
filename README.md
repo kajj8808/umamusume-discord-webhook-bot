@@ -27,3 +27,9 @@ npx prisma generate
 - DATABASE_URL (ex. "file:./database.db")
 - WEBHOOK_URL (discord webhook url)
 - PORT (server port)
+
+### 참조
+
+- [Puppeteer](https://pptr.dev/)
+
+- [Puppeteer 사용법](https://velog.io/@jeffyoun/Puppeteer%EB%A1%9C-%ED%95%99%EA%B5%90-%EA%B3%B5%EC%A7%80-%EA%B8%80-%ED%81%AC%EB%A1%A4%EB%A7%81-%ED%95%98%EA%B8%B0)

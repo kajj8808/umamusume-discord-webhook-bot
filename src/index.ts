@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { upsertPickupData, upsertRewords } from "../lib/auto";
 import db from "../lib/db";
-import { sendPickupDataToDiscord } from "../lib/discord";
+import { sendPickupDataToDiscord, sendPostToDiscord } from "../lib/discord";
 import {
   formatToKorDate,
   getDaysBetween,
@@ -10,6 +10,7 @@ import {
 } from "../lib/utile";
 import { Field } from "../types/interface";
 import schedule from "node-schedule";
+import { umamusumeChannelScraper } from "../lib/scraper";
 
 const app = new Hono();
 
@@ -110,4 +111,21 @@ schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
     title: `사료 계산기 ${formatToKorDate(new Date())}`,
     fields: fields,
   });
+  // post 부분
+  const posts = await umamusumeChannelScraper();
+
+  for (let post of posts) {
+    try {
+      const newPost = await db.post.create({
+        data: {
+          title: post.title,
+          description: post.description,
+          image: post.image,
+        },
+      });
+      sendPostToDiscord(newPost);
+    } catch (error) {
+      // title 를 유니크 값으로 중복일 경우 db에 등록하지 않습니다.
+    }
+  }
 });
