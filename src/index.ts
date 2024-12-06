@@ -121,6 +121,7 @@ schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
           title: post.title,
           description: post.description,
           image: post.image,
+          link: post.link,
         },
       });
       sendPostToDiscord(newPost);
@@ -129,3 +130,4 @@ schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
     }
   }
 });
+const posts = umamusumeChannelScraper();

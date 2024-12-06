@@ -36,4 +36,5 @@ model Post {
   title       String @unique
   description String
   image       String
+  link        String
 }

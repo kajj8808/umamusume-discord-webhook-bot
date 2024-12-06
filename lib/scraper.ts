@@ -7,6 +7,7 @@ interface UmamusumePost {
   title: string;
   description: string;
   image: string;
+  link: string;
 }
 
 export async function umamusumeChannelScraper() {
@@ -35,10 +36,14 @@ export async function umamusumeChannelScraper() {
       const backgroundImage = await card.$eval(".wrap_fit_thumb", (element) => {
         return window.getComputedStyle(element).backgroundImage;
       });
+      const link = await card.$eval("a", (element) => {
+        return element.href;
+      });
       posts.push({
         title: title!,
         description: description!,
         image: backgroundImage.match(/url\("(.*)"/)![1], // url( a ) 안의 a 값을 구하기 위해 사용.
+        link: link,
       });
     } catch (error) {
       // umamusume 채널 정보에는 title, thumnail이 필수로 포함 되어 있음. 그렇기에 스킵! ( 아닌 경우 => 채널 정보거나, 새소식 201 등 post 정보가 아님! )
