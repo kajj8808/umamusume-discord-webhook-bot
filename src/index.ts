@@ -130,4 +130,3 @@ schedule.scheduleJob({ hour: 0, minute: 5 }, async () => {
     }
   }
 });
-const posts = umamusumeChannelScraper();
