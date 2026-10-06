@@ -32,3 +32,7 @@ lerna-debug.log*
 *.db
 *.db-journal
 migrations
+runtime-data/
+config.json
+.env.*
+!.env.example
